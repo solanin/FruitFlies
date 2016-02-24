@@ -81,10 +81,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         //auto move
         let actionMove = SKAction.moveTo(endPos, duration: NSTimeInterval(CGFloat(4.0)))
-        let loseAction = SKAction.runBlock() {
-            // Run out of Fuel
+        let reset = SKAction.runBlock() {
+            self.player.position = self.startPos
         }
-        player.runAction(SKAction.sequence([actionMove, loseAction]))
+        player.runAction(
+            SKAction.repeatActionForever(
+                SKAction.sequence([actionMove, reset])
+                )
+            )
         
         
         physicsWorld.gravity = CGVectorMake(0, 0)
@@ -232,8 +236,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         fruitCollected++
         labelAdded.text = "Collected: \(fruitCollected)"
-        
-        player.position = startPos
         
         if (fruitCollected > numToWin) {
             let reveal = SKTransition.flipHorizontalWithDuration(0.5)
