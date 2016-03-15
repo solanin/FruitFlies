@@ -20,10 +20,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var numToWin = 30
     var startPos = CGPoint(x: 0, y: 0)
     var endPos = CGPoint(x: 0, y: 0)
-    var labelKilled = SKLabelNode(fontNamed: Constants.Font.MainFont)
-    var labelAdded = SKLabelNode(fontNamed: Constants.Font.MainFont)
-    var labelFuel = SKLabelNode(fontNamed: Constants.Font.MainFont)
-    var labelHighScore = SKLabelNode(fontNamed: Constants.Font.MainFont)
+    var labelKilled = SKLabelNode(fontNamed: Constants.Font.text)
+    var labelAdded = SKLabelNode(fontNamed: Constants.Font.text)
+    var labelFuel = SKLabelNode(fontNamed: Constants.Font.text)
+    var labelHighScore = SKLabelNode(fontNamed: Constants.Font.text)
     var touched:Bool = false;
     var touchLocation = CGPointMake(0, 0)
     var fuelAllowed:CGFloat = 75;

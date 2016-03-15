@@ -11,7 +11,7 @@ import SpriteKit
 
 class StartScene: SKScene {
     // MARK: - ivars -
-    let button:SKLabelNode = SKLabelNode(fontNamed: Constants.Font.MainFont)
+    let button:SKLabelNode = SKLabelNode(fontNamed: Constants.Font.Main)
     
     // MARK: - Initialization -
     convenience override init(size: CGSize) {
@@ -33,7 +33,7 @@ class StartScene: SKScene {
     override func didMoveToView(view: SKView) {
         backgroundColor = Constants.Color.MenuColor
         
-        let label = SKLabelNode(fontNamed: Constants.Font.MainFont)
+        let label = SKLabelNode(fontNamed: Constants.Font.Title)
         label.fontColor = Constants.Color.MenuFontColor
         label.text = "Fruit Flies"
         label.fontSize = 50
@@ -45,7 +45,7 @@ class StartScene: SKScene {
         control.position = CGPoint(x: CGRectGetMidX(self.frame), y: CGRectGetMidY(self.frame))
         control.setNormalStateLabelText("Start Game")
         control.setNormalStateLabelFontColor(Constants.Color.MenuButtonFont)
-        control.setAllStatesLabelFontName(Constants.Font.MainFont)
+        control.setAllStatesLabelFontName(Constants.Font.Main)
         control.setAllStatesLabelFontSize(30.0)
         control.addClosure(.TouchUpInside, target: self, closure: { (scene, sender) -> () in
             (self.view!.window!.rootViewController as! GameViewController).loadGameScene()

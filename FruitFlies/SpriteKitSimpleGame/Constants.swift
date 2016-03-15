@@ -11,7 +11,9 @@ import SpriteKit
 
 struct Constants{
     struct Font {
-        static let MainFont = "Optima-ExtraBlack"
+        static let Title = "Noteworthy-Light"
+        static let Main = "Optima-ExtraBlack"
+        static let text = "Noteworthy-Bold"
     }
     
     struct HUD{

@@ -16,7 +16,7 @@ class GameOverScene: SKScene {
         let message = won ? "You Won!" : "You Lose"
         
         // 3
-        let label = SKLabelNode(fontNamed: Constants.Font.MainFont)
+        let label = SKLabelNode(fontNamed: Constants.Font.Main)
         label.text = message
         label.fontSize = 40
         label.fontColor = Constants.Color.MenuFontColor
