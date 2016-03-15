@@ -26,6 +26,8 @@
 		67367A8B1C98AC6900881CB6 /* SKTTimingFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67367A7F1C98AC6900881CB6 /* SKTTimingFunctions.swift */; };
 		67367A8C1C98AC6900881CB6 /* Vector3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67367A801C98AC6900881CB6 /* Vector3.swift */; };
 		67367A901C98AD1900881CB6 /* Coin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67367A8F1C98AD1900881CB6 /* Coin.swift */; };
+		67538D251C98B90F00BEE73D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 67538D241C98B90F00BEE73D /* LaunchScreen.storyboard */; };
+		67538D271C98BA9F00BEE73D /* FruitFliesTempLaunch.png in Resources */ = {isa = PBXBuildFile; fileRef = 67538D261C98BA9F00BEE73D /* FruitFliesTempLaunch.png */; };
 		67C995561C694D71002F7C4D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C995551C694D71002F7C4D /* AppDelegate.swift */; };
 		67C9955C1C694D71002F7C4D /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C9955B1C694D71002F7C4D /* GameViewController.swift */; };
 		67C9955F1C694D71002F7C4D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 67C9955D1C694D71002F7C4D /* Main.storyboard */; };
@@ -33,7 +35,6 @@
 		67C9956C1C694F39002F7C4D /* GameOverScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C9956B1C694F39002F7C4D /* GameOverScene.swift */; };
 		67C9956E1C695619002F7C4D /* Sounds in Resources */ = {isa = PBXBuildFile; fileRef = 67C9956D1C695619002F7C4D /* Sounds */; };
 		67C995701C69564D002F7C4D /* sprites.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 67C9956F1C69564D002F7C4D /* sprites.atlas */; };
-		67E04F311C8D2641004C8977 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 67E04F301C8D2641004C8977 /* LaunchScreen.storyboard */; };
 		67E70D941C6A3732004850FB /* MyParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 67E70D921C6A3732004850FB /* MyParticle.sks */; };
 		67E70D951C6A3732004850FB /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 67E70D931C6A3732004850FB /* spark.png */; };
 		67FD655A1C984E8100246D25 /* DefualtsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67FD65591C984E8100246D25 /* DefualtsManager.swift */; };
@@ -64,6 +65,8 @@
 		67367A7F1C98AC6900881CB6 /* SKTTimingFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SKTTimingFunctions.swift; sourceTree = "<group>"; };
 		67367A801C98AC6900881CB6 /* Vector3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Vector3.swift; sourceTree = "<group>"; };
 		67367A8F1C98AD1900881CB6 /* Coin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Coin.swift; sourceTree = "<group>"; };
+		67538D241C98B90F00BEE73D /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ../../../Downloads/FruitFlies/SpriteKitSimpleGame/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		67538D261C98BA9F00BEE73D /* FruitFliesTempLaunch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FruitFliesTempLaunch.png; path = sprites.atlas/FruitFliesTempLaunch.png; sourceTree = "<group>"; };
 		67C995521C694D71002F7C4D /* FruitFlies.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FruitFlies.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		67C995551C694D71002F7C4D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		67C9955B1C694D71002F7C4D /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
@@ -73,7 +76,6 @@
 		67C9956B1C694F39002F7C4D /* GameOverScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameOverScene.swift; sourceTree = "<group>"; };
 		67C9956D1C695619002F7C4D /* Sounds */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Sounds; sourceTree = "<group>"; };
 		67C9956F1C69564D002F7C4D /* sprites.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = sprites.atlas; sourceTree = "<group>"; };
-		67E04F301C8D2641004C8977 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		67E70D921C6A3732004850FB /* MyParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MyParticle.sks; sourceTree = "<group>"; };
 		67E70D931C6A3732004850FB /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
 		67FD65591C984E8100246D25 /* DefualtsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefualtsManager.swift; sourceTree = "<group>"; };
@@ -140,6 +142,7 @@
 		67367A8E1C98ACE900881CB6 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				67538D261C98BA9F00BEE73D /* FruitFliesTempLaunch.png */,
 				67367A8F1C98AD1900881CB6 /* Coin.swift */,
 			);
 			name = Model;
@@ -179,7 +182,7 @@
 				67FD655D1C9856A200246D25 /* Constants.swift */,
 				67FD65591C984E8100246D25 /* DefualtsManager.swift */,
 				67C9955D1C694D71002F7C4D /* Main.storyboard */,
-				67E04F301C8D2641004C8977 /* LaunchScreen.storyboard */,
+				67538D241C98B90F00BEE73D /* LaunchScreen.storyboard */,
 				67C995651C694D71002F7C4D /* Info.plist */,
 			);
 			name = FruitFlies;
@@ -244,15 +247,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				67538D251C98B90F00BEE73D /* LaunchScreen.storyboard in Resources */,
 				67C995701C69564D002F7C4D /* sprites.atlas in Resources */,
 				67FD65621C98583700246D25 /* TWControls in Resources */,
 				67FD65841C985ECC00246D25 /* Info.plist in Resources */,
 				67E70D941C6A3732004850FB /* MyParticle.sks in Resources */,
 				67E70D951C6A3732004850FB /* spark.png in Resources */,
 				67C995611C694D71002F7C4D /* Assets.xcassets in Resources */,
-				67E04F311C8D2641004C8977 /* LaunchScreen.storyboard in Resources */,
 				67C9956E1C695619002F7C4D /* Sounds in Resources */,
 				67C9955F1C694D71002F7C4D /* Main.storyboard in Resources */,
+				67538D271C98BA9F00BEE73D /* FruitFliesTempLaunch.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -214,20 +214,36 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             launchFruit(touchLocation);
         }
         
-        if(player.position.x < 0){
-            player.position.x = frame.width
+        if(player.position.x <= 0){
+            //fixing edge collision to bounce off
+            let destination = CGPointMake(30, player.position.y)
+            let actionRecover = SKAction.moveTo(destination, duration: 0.25)
+            player.runAction(actionRecover)
+            player.physicsBody?.velocity = CGVectorMake(0, 0)
+            player.physicsBody?.angularVelocity = 0
         }
         
         if(player.position.x > frame.width){
-            player.position.x = 0;
+            //fixing edge collision to bounce off
+            let destination = CGPointMake(frame.width-30, player.position.y)
+            let actionRecover = SKAction.moveTo(destination, duration: 0.25)
+            player.runAction(actionRecover)
+            player.physicsBody?.velocity = CGVectorMake(0, 0)
+            player.physicsBody?.angularVelocity = 0
         }
         
         if(player.position.y < 0){
-            player.position.y = frame.height
+            //fixing edge collision to bounce off
+            playerDied()
         }
         
         if(player.position.y > frame.height){
-            player.position.y = 0;
+            //fixing edge collision to bounce off
+            let destination = CGPointMake(player.position.x, 30)
+            let actionRecover = SKAction.moveTo(destination, duration: 0.25)
+            player.runAction(actionRecover)
+            player.physicsBody?.velocity = CGVectorMake(0, 0)
+            player.physicsBody?.angularVelocity = 0
         }
     }
     
