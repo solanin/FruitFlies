@@ -3,6 +3,8 @@ import SpriteKit
 
 class GameOverScene: SKScene {
     
+    // MARK: - Initialization -
+    
     init(size: CGSize, won:Bool, score:Int) {
         
         super.init(size: size)

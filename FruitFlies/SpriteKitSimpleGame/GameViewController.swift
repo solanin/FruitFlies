@@ -2,11 +2,15 @@ import UIKit
 import SpriteKit
 
 class GameViewController: UIViewController {
+    
+    // MARK: - ivars -
     var gameScene: GameScene?
     var skView:SKView!
     let showDebugData = true
     let screenSize = CGSize(width: 1080, height: 1920)
     let scaleMode = SKSceneScaleMode.ResizeFill
+    
+    // MARK: - Methods -
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,7 +24,7 @@ class GameViewController: UIViewController {
         
         loadHomeScene()
 
-    }
+    }    
     
     override func prefersStatusBarHidden() -> Bool {
         return true

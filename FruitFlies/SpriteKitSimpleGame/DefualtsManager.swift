@@ -8,13 +8,17 @@
 
 import Foundation
 class DefaultsManager{
+        
+    // MARK: - ivars -
     static let sharedDefaultsManager = DefaultsManager() // single instance
-    
     let HIGH_SCORE_KEY = "highScoreKey"
     let defaults = NSUserDefaults.standardUserDefaults()
+    
+    // MARK: - Initialization -
     // This prevents others from using the default initializer for this class.
     private init() {}
     
+    // MARK: - Methods -
     
     // Gets amt of flies swatted
     func getHighScore()->Int{
@@ -27,6 +31,7 @@ class DefaultsManager{
         }
     }
     
+    // Saves amt of flies swatted
     func setHighScore(score:Int){
         defaults.setInteger(score, forKey: HIGH_SCORE_KEY)
         defaults.synchronize() // write to disk

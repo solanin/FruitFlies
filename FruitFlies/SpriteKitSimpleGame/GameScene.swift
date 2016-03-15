@@ -1,37 +1,5 @@
 import SpriteKit
 
-func + (left: CGPoint, right: CGPoint) -> CGPoint {
-    return CGPoint(x: left.x + right.x, y: left.y + right.y)
-}
-
-func - (left: CGPoint, right: CGPoint) -> CGPoint {
-    return CGPoint(x: left.x - right.x, y: left.y - right.y)
-}
-
-func * (point: CGPoint, scalar: CGFloat) -> CGPoint {
-    return CGPoint(x: point.x * scalar, y: point.y * scalar)
-}
-
-func / (point: CGPoint, scalar: CGFloat) -> CGPoint {
-    return CGPoint(x: point.x / scalar, y: point.y / scalar)
-}
-
-#if !(arch(x86_64) || arch(arm64))
-    func sqrt(a: CGFloat) -> CGFloat {
-        return CGFloat(sqrtf(Float(a)))
-    }
-#endif
-
-extension CGPoint {
-    func length() -> CGFloat {
-        return sqrt(x*x + y*y)
-    }
-    
-    func normalized() -> CGPoint {
-        return self / length()
-    }
-}
-
 struct PhysicsCategory {
     static let None      : UInt32 = 0
     static let All       : UInt32 = UInt32.max
@@ -44,7 +12,7 @@ struct PhysicsCategory {
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
-    // 1
+    // MARK: - ivars -
     let player = SKSpriteNode(imageNamed: Constants.Image.Player)
     let target = SKSpriteNode(imageNamed: Constants.Image.Target)
     var monstersDestroyed = 0
@@ -61,6 +29,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var fuelAllowed:CGFloat = 75;
     var fuelLeft:CGFloat = 75;
     
+    
+    // MARK: - Initialization -
+    
     convenience override init(size: CGSize) {
         self.init(size: size, scaleMode: SKSceneScaleMode.ResizeFill)
     }
@@ -74,6 +45,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // MARK: - Methods -
     
     override func didMoveToView(view: SKView) {
         // 2
@@ -318,6 +291,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player.physicsBody?.velocity = CGVectorMake(0, 0)
         player.physicsBody?.angularVelocity = 0
     }
+    
+    // MARK: - Methods - Collision -
     
     func projectileDidCollideWithMonster(projectile:SKSpriteNode, monster:SKSpriteNode) {
         print("Hit Monster")

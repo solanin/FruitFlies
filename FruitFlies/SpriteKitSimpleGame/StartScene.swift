@@ -8,12 +8,12 @@
 
 import Foundation
 import SpriteKit
+
 class StartScene: SKScene {
     // MARK: - ivars -
     let button:SKLabelNode = SKLabelNode(fontNamed: Constants.Font.MainFont)
     
     // MARK: - Initialization -
-    
     convenience override init(size: CGSize) {
         self.init(size: size, scaleMode: SKSceneScaleMode.ResizeFill)
     }
@@ -27,6 +27,8 @@ class StartScene: SKScene {
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // MARK: - Methods -
     
     override func didMoveToView(view: SKView) {
         backgroundColor = Constants.Color.MenuColor
