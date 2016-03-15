@@ -12,7 +12,7 @@ import SpriteKit
 struct Constants{
     struct Font {
         static let Title = "Noteworthy-Light"
-        static let Main = "Optima-ExtraBlack"
+        static let Main = "MarkerFelt-Thin"
         static let text = "Noteworthy-Bold"
     }
     
@@ -27,6 +27,17 @@ struct Constants{
         static let Monster = "monster"
         static let Projectile = "projectile"
         static let Particle = "MyParticle"
+    }
+    
+    struct Label{
+        static let title = "Fruit Flies"
+        static let startBtn = "Play"
+        static let collected = "Collected: "
+        static let highScore = "High Score: "
+        static let killed = "Swatted: "
+        static let fuel = "Fuel: "
+        static let lives = "Lives: "
+        static let loseMessage = "You Lose"
     }
     
     struct Sound{

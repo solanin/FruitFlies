@@ -17,17 +17,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let target = SKSpriteNode(imageNamed: Constants.Image.Target)
     var monstersDestroyed = 0
     var fruitCollected = 0
-    var numToWin = 30
     var startPos = CGPoint(x: 0, y: 0)
     var endPos = CGPoint(x: 0, y: 0)
     var labelKilled = SKLabelNode(fontNamed: Constants.Font.text)
     var labelAdded = SKLabelNode(fontNamed: Constants.Font.text)
     var labelFuel = SKLabelNode(fontNamed: Constants.Font.text)
     var labelHighScore = SKLabelNode(fontNamed: Constants.Font.text)
+    var labelLives = SKLabelNode(fontNamed: Constants.Font.text)
     var touched:Bool = false;
     var touchLocation = CGPointMake(0, 0)
-    var fuelAllowed:CGFloat = 75;
-    var fuelLeft:CGFloat = 75;
+    var MAX_FUEL:CGFloat = 75;
+    var fuel:CGFloat = 75;
+    var MAX_LIVES = 5;
+    var lives = 5;
     
     
     // MARK: - Initialization -
@@ -99,26 +101,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         backgroundMusic.autoplayLooped = true
         addChild(backgroundMusic)
         
-        labelKilled.position = CGPointMake(5,self.frame.height-5)
-        labelKilled.verticalAlignmentMode = .Top
-        labelKilled.horizontalAlignmentMode = .Left
-        labelKilled.text = "Swatted: \(monstersDestroyed)"
-        labelKilled.fontColor = Constants.Color.HUDFontColor
-        labelKilled.fontSize = 20
-        addChild(labelKilled)
-        
-        labelAdded.position = CGPointMake(125,self.frame.height-5)
+        labelAdded.position = CGPointMake(5,self.frame.height-5)
         labelAdded.verticalAlignmentMode = .Top
         labelAdded.horizontalAlignmentMode = .Left
-        labelAdded.text = "Smoothies: \(fruitCollected)"
+        labelAdded.text = Constants.Label.collected + "\(fruitCollected)"
         labelAdded.fontColor = Constants.Color.HUDFontColor
         labelAdded.fontSize = 20
         addChild(labelAdded)
         
+        labelKilled.position = CGPointMake(135,self.frame.height-5)
+        labelKilled.verticalAlignmentMode = .Top
+        labelKilled.horizontalAlignmentMode = .Left
+        labelKilled.text = Constants.Label.killed + "\(monstersDestroyed)"
+        labelKilled.fontColor = Constants.Color.HUDFontColor
+        labelKilled.fontSize = 20
+        addChild(labelKilled)
+        
         labelFuel.position = CGPointMake(305,self.frame.height-5)
         labelFuel.verticalAlignmentMode = .Top
         labelFuel.horizontalAlignmentMode = .Left
-        labelFuel.text = "Fuel: \(fuelLeft) / \(fuelAllowed)"
+        labelFuel.text = Constants.Label.fuel + "\(fuel) / \(MAX_FUEL)"
         labelFuel.fontColor = Constants.Color.HUDFontColor
         labelFuel.fontSize = 20
         addChild(labelFuel)
@@ -126,10 +128,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         labelHighScore.position = CGPointMake(5, self.frame.height-5 - 20)
         labelHighScore.verticalAlignmentMode = .Top
         labelHighScore.horizontalAlignmentMode = .Left
-        labelHighScore.text = "High Score: \(DefaultsManager.sharedDefaultsManager.getHighScore())"
+        labelHighScore.text = Constants.Label.highScore + "\(DefaultsManager.sharedDefaultsManager.getHighScore())"
         labelHighScore.fontColor = Constants.Color.HUDFontColor
         labelHighScore.fontSize = 10
         addChild(labelHighScore)
+        
+        labelLives.position = CGPointMake(605,self.frame.height-5)
+        labelLives.verticalAlignmentMode = .Top
+        labelLives.horizontalAlignmentMode = .Left
+        labelLives.text = Constants.Label.lives + "\(lives) / \(MAX_LIVES)"
+        labelLives.fontColor = Constants.Color.HUDFontColor
+        labelLives.fontSize = 20
+        addChild(labelLives)
     }
     
     func random() -> CGFloat {
@@ -256,9 +266,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         // 10 - Fuel limit
-        fuelLeft = fuelLeft - 1
-        labelFuel.text = "Fuel: \(fuelLeft) / \(fuelAllowed)"
-        if(fuelLeft <= 0){
+        fuel = fuel - 1
+        labelFuel.text = Constants.Label.fuel + "\(fuel) / \(MAX_FUEL)"
+        if(fuel <= 0){
             print("NO MORE FUEL!!")
             playerDied()
         }
@@ -286,8 +296,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         startPos = CGPoint(x: size.width * 0.1, y: size.height * 0.5)
         let actionDied = SKAction.moveTo(startPos, duration: 0.01)
         player.runAction(actionDied)
-        fuelLeft = fuelAllowed
-        labelFuel.text = "Fuel: \(fuelLeft) / \(fuelAllowed)"
+        
+        lives = lives - 1;
+        labelLives.text = Constants.Label.lives + "\(lives) / \(MAX_LIVES)"
+        if lives <= 0 {
+            let reveal = SKTransition.flipHorizontalWithDuration(0.5)
+            let gameOverScene = GameOverScene(size: self.size, score: fruitCollected)
+            self.view?.presentScene(gameOverScene, transition: reveal)
+        }
+        
+        fuel = MAX_FUEL
+        labelFuel.text = Constants.Label.fuel + "\(fuel) / \(MAX_FUEL)"
         player.physicsBody?.velocity = CGVectorMake(0, 0)
         player.physicsBody?.angularVelocity = 0
     }
@@ -300,37 +319,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         monster.removeFromParent()
         
         monstersDestroyed++
-        labelKilled.text = "Killed: \(monstersDestroyed)"
+        fuel = fuel + 2;
+        labelFuel.text = Constants.Label.fuel + "\(fuel) / \(MAX_FUEL)"
+        labelKilled.text = Constants.Label.killed + "\(monstersDestroyed)"
     }
     
     func monsterDidCollideWithPlayer(player:SKSpriteNode, monster:SKSpriteNode) {
         print("Hit Player")
         //monster.removeFromParent()
         playerDied()
-        
-        let reveal = SKTransition.flipHorizontalWithDuration(0.5)
-        let gameOverScene = GameOverScene(size: self.size, won: false, score: monstersDestroyed)
-        self.view?.presentScene(gameOverScene, transition: reveal)
     }
 
     func playerDidCollideWithTarget(player:SKSpriteNode) {
         print("Hit Target")
         
         fruitCollected++
-        labelAdded.text = "Collected: \(fruitCollected)"
+        labelAdded.text = Constants.Label.collected + "\(fruitCollected)"
         startPos = CGPoint(x: size.width * 0.1, y: size.height * 0.5)
         let actionBlended = SKAction.moveTo(startPos, duration: 0.01)
         player.runAction(actionBlended)
-        fuelLeft = fuelAllowed
-        labelFuel.text = "Fuel: \(fuelLeft) / \(fuelAllowed)"
+        fuel = MAX_FUEL
+        labelFuel.text = Constants.Label.fuel + "\(fuel) / \(MAX_FUEL)"
         player.physicsBody?.velocity = CGVectorMake(0, 0)
         player.physicsBody?.angularVelocity = 0
-        
-        if (fruitCollected > numToWin) {
-            let reveal = SKTransition.flipHorizontalWithDuration(0.5)
-            let gameOverScene = GameOverScene(size: self.size, won: true, score: monstersDestroyed)
-            self.view?.presentScene(gameOverScene, transition: reveal)
-        }
     }
     
     func didBeginContact(contact: SKPhysicsContact) {

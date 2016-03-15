@@ -5,19 +5,16 @@ class GameOverScene: SKScene {
     
     // MARK: - Initialization -
     
-    init(size: CGSize, won:Bool, score:Int) {
+    init(size: CGSize, score:Int) {
         
         super.init(size: size)
         
         // 1
         backgroundColor = Constants.Color.MenuColor
         
-        // 2
-        let message = won ? "You Won!" : "You Lose"
-        
         // 3
         let label = SKLabelNode(fontNamed: Constants.Font.Main)
-        label.text = message
+        label.text = Constants.Label.loseMessage
         label.fontSize = 40
         label.fontColor = Constants.Color.MenuFontColor
         label.position = CGPoint(x: size.width/2, y: size.height/2)
