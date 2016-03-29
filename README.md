@@ -3,7 +3,7 @@
 Made by Jacob Westerback and Luke Zetterlund
 
 ##Project Requirements
-The name of our game is “Fruit Flies” (https://github.com/solanin/FruitFlies). We made a 2D shooter using SpriteKit, targeted at tablets. We supported landscape orientation and had a total of 3 screens; An intro, a game scene, and a results screen. This app functions on all tablets and has icons of all required sizes. There is a launch screen with the title and credits on it. 
+The name of our game is “Fruit Flies”. We made a 2D shooter using SpriteKit, targeted at tablets. We supported landscape orientation and had a total of 3 screens; An intro, a game scene, and a results screen. This app functions on all tablets and has icons of all required sizes. There is a launch screen with the title and credits on it. 
 
 You play as a rocket equipped strawberry. You tap to shoot your rocket which moves you in the opposite direction. Your goal is to get to the blender on the other side of a screen and make as many smoothies as you can, while not hitting the floor or any bugs. It takes six strawberries to make one smoothie. These controls are simple and easy to learn and do not require an instructions screen. The game does not take very long to play as you only have 5 lives. We have both shooting sound effects and background music files in our game. The game provides challenge but it is not unusably hard. If you run out of fuel for the rocket you die but you also gain fuel by shooting bugs. Since bug come at you from the smoothie side of the screen this also gets you further away from your goal. This conflicting decision point adds some depth to the game. 
 
