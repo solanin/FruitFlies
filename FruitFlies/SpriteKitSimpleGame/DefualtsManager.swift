@@ -8,7 +8,9 @@
 
 import Foundation
 class DefaultsManager{
-        
+    
+    //SAVES and LOADS data for the game
+    
     // MARK: - ivars -
     static let sharedDefaultsManager = DefaultsManager() // single instance
     let HIGH_SCORE_KEY = "highScoreKey"

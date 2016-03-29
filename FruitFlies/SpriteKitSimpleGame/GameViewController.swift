@@ -30,6 +30,8 @@ class GameViewController: UIViewController {
         return true
     }
     
+    // Loading for various scenes
+    
     func loadHomeScene(){
         let scene = StartScene(size:screenSize, scaleMode:scaleMode)
         let reveal = SKTransition.crossFadeWithDuration(1)

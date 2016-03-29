@@ -13,23 +13,27 @@ struct PhysicsCategory {
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // MARK: - ivars -
-    let player = SKSpriteNode(imageNamed: Constants.Image.Player)
-    let target = SKSpriteNode(imageNamed: Constants.Image.Target)
-    var monstersDestroyed = 0
-    var fruitCollected = 0
-    var startPos = CGPoint(x: 0, y: 0)
-    var endPos = CGPoint(x: 0, y: 0)
+    let player = Player(imageNamed: Constants.Image.Player)
+    let target = SKSpriteNode(imageNamed: Constants.Image.Smoothie0)
+    var startPos:CGPoint = CGPoint(x: 0.0, y: 0.0)
+    var endPos:CGPoint = CGPoint(x: 0.0, y: 0.0)
+    
+    // UI
     var labelKilled = SKLabelNode(fontNamed: Constants.Font.text)
     var labelAdded = SKLabelNode(fontNamed: Constants.Font.text)
     var labelFuel = SKLabelNode(fontNamed: Constants.Font.text)
+    var labelSmoothie = SKLabelNode(fontNamed: Constants.Font.text)
     var labelHighScore = SKLabelNode(fontNamed: Constants.Font.text)
     var labelLives = SKLabelNode(fontNamed: Constants.Font.text)
-    var touched:Bool = false;
+    var fuelBarBack = SKShapeNode(rect: CGRectZero)
+    var fuelBar = SKShapeNode(rect: CGRectZero)
+    var smoothieBarBack = SKShapeNode(rect: CGRectZero)
+    var smoothieBar = SKShapeNode(rect: CGRectZero)
+    var currentSmoothie = 0
+    let MAX_SMOOTHIE = 6
+    var touched:Bool = false
     var touchLocation = CGPointMake(0, 0)
-    var MAX_FUEL:CGFloat = 75;
-    var fuel:CGFloat = 75;
-    var MAX_LIVES = 5;
-    var lives = 5;
+    let shoot = SKAction.playSoundFileNamed(Constants.Sound.shooting, waitForCompletion: false)
     
     
     // MARK: - Initialization -
@@ -52,24 +56,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func didMoveToView(view: SKView) {
         // 2
-        backgroundColor = Constants.Color.BackgroundColor
+        //backgroundColor = Constants.Color.BackgroundColor
+        let bgImage = SKSpriteNode(imageNamed: Constants.Image.BG)
+        bgImage.position = CGPointMake(self.size.width/2, self.size.height/2)
+        bgImage.zPosition = -100
+        addChild(bgImage)
         
         //should be looping to stop edge
-        scene?.physicsBody = SKPhysicsBody(edgeLoopFromRect: (scene?.frame)!);
-        scene?.physicsBody?.collisionBitMask = PhysicsCategory.None;
-        scene?.physicsBody?.categoryBitMask = PhysicsCategory.Border;
-        scene?.physicsBody?.contactTestBitMask = PhysicsCategory.Player;
+        scene?.physicsBody = SKPhysicsBody(edgeLoopFromRect: (scene?.frame)!)
+        scene?.physicsBody?.collisionBitMask = PhysicsCategory.None
+        scene?.physicsBody?.categoryBitMask = PhysicsCategory.Border
+        scene?.physicsBody?.contactTestBitMask = PhysicsCategory.Player
         
-        // 3
+        // Make
         startPos = CGPoint(x: size.width * 0.1, y: size.height * 0.5)
-        player.position = startPos
-        player.physicsBody = SKPhysicsBody(rectangleOfSize: player.size) // 1
-        player.physicsBody?.dynamic = true // 2
-        player.physicsBody?.categoryBitMask = PhysicsCategory.Player // 3
-        player.physicsBody?.contactTestBitMask = PhysicsCategory.Monster // 4
-        player.physicsBody?.collisionBitMask = PhysicsCategory.None // 5
+        player.setup(startPos, screen: frame)
         
-        endPos = CGPoint(x: size.width * 0.9, y: size.height * 0.5)
+        endPos = CGPoint(x: size.width * 0.9, y: size.height * 0.3)
         target.position = endPos
         target.physicsBody = SKPhysicsBody(rectangleOfSize: player.size) // 1
         target.physicsBody?.dynamic = true // 2
@@ -78,12 +81,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         target.physicsBody?.collisionBitMask = PhysicsCategory.None // 5
         
         //Blender not effected by gravity
-        target.physicsBody?.affectedByGravity = false;
+        target.physicsBody?.affectedByGravity = false
         
         //Add edge collision to fruit
         
         
-        // 4
+        // Add to screen
         addChild(player)
         addChild(target)
         
@@ -101,31 +104,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         backgroundMusic.autoplayLooped = true
         addChild(backgroundMusic)
         
-        labelAdded.position = CGPointMake(5,self.frame.height-5)
+        labelAdded.position = CGPointMake(20,self.frame.height-15)
         labelAdded.verticalAlignmentMode = .Top
         labelAdded.horizontalAlignmentMode = .Left
-        labelAdded.text = Constants.Label.collected + "\(fruitCollected)"
+        labelAdded.text = Constants.Label.collected + "\(player.smoothiesCollected)"
         labelAdded.fontColor = Constants.Color.HUDFontColor
         labelAdded.fontSize = 20
         addChild(labelAdded)
         
-        labelKilled.position = CGPointMake(135,self.frame.height-5)
-        labelKilled.verticalAlignmentMode = .Top
-        labelKilled.horizontalAlignmentMode = .Left
-        labelKilled.text = Constants.Label.killed + "\(monstersDestroyed)"
-        labelKilled.fontColor = Constants.Color.HUDFontColor
-        labelKilled.fontSize = 20
-        addChild(labelKilled)
-        
-        labelFuel.position = CGPointMake(305,self.frame.height-5)
-        labelFuel.verticalAlignmentMode = .Top
-        labelFuel.horizontalAlignmentMode = .Left
-        labelFuel.text = Constants.Label.fuel + "\(fuel) / \(MAX_FUEL)"
-        labelFuel.fontColor = Constants.Color.HUDFontColor
-        labelFuel.fontSize = 20
-        addChild(labelFuel)
-        
-        labelHighScore.position = CGPointMake(5, self.frame.height-5 - 20)
+        labelHighScore.position = CGPointMake(20, self.frame.height-40)
         labelHighScore.verticalAlignmentMode = .Top
         labelHighScore.horizontalAlignmentMode = .Left
         labelHighScore.text = Constants.Label.highScore + "\(DefaultsManager.sharedDefaultsManager.getHighScore())"
@@ -133,21 +120,113 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         labelHighScore.fontSize = 10
         addChild(labelHighScore)
         
-        labelLives.position = CGPointMake(605,self.frame.height-5)
+        labelKilled.position = CGPointMake(155,self.frame.height-15)
+        labelKilled.verticalAlignmentMode = .Top
+        labelKilled.horizontalAlignmentMode = .Left
+        labelKilled.text = Constants.Label.killed + "\(player.monstersDestroyed)"
+        labelKilled.fontColor = Constants.Color.HUDFontColor
+        labelKilled.fontSize = 20
+        addChild(labelKilled)
+        
+        labelSmoothie.position = CGPointMake(self.frame.width - 750,self.frame.height-15)
+        labelSmoothie.verticalAlignmentMode = .Top
+        labelSmoothie.horizontalAlignmentMode = .Left
+        labelSmoothie.text = Constants.Label.smoothie //+ "\(currentSmoothie) / \(MAX_SMOOTHIE)"
+        labelSmoothie.fontColor = Constants.Color.HUDFontColor
+        labelSmoothie.fontSize = 20
+        addChild(labelSmoothie)
+        
+        labelFuel.position = CGPointMake(self.frame.width - 450,self.frame.height-15)
+        labelFuel.verticalAlignmentMode = .Top
+        labelFuel.horizontalAlignmentMode = .Left
+        labelFuel.text = Constants.Label.fuel //+ "\(player.fuel) / \(player.MAX_FUEL)"
+        labelFuel.fontColor = Constants.Color.HUDFontColor
+        labelFuel.fontSize = 20
+        addChild(labelFuel)
+        
+        labelLives.position = CGPointMake(self.frame.width - 150, self.frame.height-15)
         labelLives.verticalAlignmentMode = .Top
         labelLives.horizontalAlignmentMode = .Left
-        labelLives.text = Constants.Label.lives + "\(lives) / \(MAX_LIVES)"
+        labelLives.text = Constants.Label.lives + "\(player.lives) / \(player.MAX_LIVES)"
         labelLives.fontColor = Constants.Color.HUDFontColor
         labelLives.fontSize = 20
         addChild(labelLives)
+        
+        addChild(fuelBarBack)
+        addChild(fuelBar)
+        addChild(smoothieBarBack)
+        addChild(smoothieBar)
+        updateFuelLabel()
+        updateSmoothieLabel()
+        
     }
     
-    func random() -> CGFloat {
-        return CGFloat(Float(arc4random()) / 0xFFFFFFFF)
+    override func update(currentTime: NSTimeInterval) {
+        if(touched){
+            launchFruit(touchLocation)
+        }
+        
+        if(player.position.y < 0){
+            //fixing edge collision to bounce off
+            playerDied()
+        }
+        
+        
+        if player.isOutOfBounds {
+            let destination:CGPoint = player.bounce();
+            let actionRecover = SKAction.moveTo(destination, duration: 0.25)
+            player.runAction(actionRecover)
+            player.physicsBody?.velocity = CGVectorMake(0, 0)
+            player.physicsBody?.angularVelocity = 0
+        }
+
     }
     
-    func random(min min: CGFloat, max: CGFloat) -> CGFloat {
-        return random() * (max - min) + min
+    func updateFuelLabel() {
+        //labelFuel.text = Constants.Label.fuel + "\(player.fuel) / \(player.MAX_FUEL)"
+        
+        // Rm old
+        fuelBarBack.removeFromParent()
+        fuelBar.removeFromParent()
+        
+        // Calc new
+        var box = CGRectMake(self.frame.width - 400, self.frame.height-40, 150, 20);
+        fuelBarBack = SKShapeNode(rect: box)
+        fuelBarBack.fillColor = Constants.Color.Bar
+        fuelBarBack.lineWidth = 0;
+        addChild(fuelBarBack)
+        
+        let width = (player.fuel / player.MAX_FUEL) * 150
+        //print (width)
+        box = CGRectMake(self.frame.width - 400, self.frame.height-40, width, 20);
+        
+        fuelBar = SKShapeNode(rect: box)
+        fuelBar.fillColor = Constants.Color.Fuel
+        fuelBar.lineWidth = 0;
+        addChild(fuelBar)
+    }
+    
+    func updateSmoothieLabel() {
+        //labelSmoothie.text = Constants.Label.smoothie + "\(currentSmoothie) / \(MAX_SMOOTHIE)"
+        
+        // Rm old
+        smoothieBarBack.removeFromParent()
+        smoothieBar.removeFromParent()
+        
+        // Calc new
+        var box = CGRectMake(self.frame.width - 650, self.frame.height-40, 150, 20);
+        smoothieBarBack = SKShapeNode(rect: box)
+        smoothieBarBack.fillColor = Constants.Color.Bar
+        smoothieBarBack.lineWidth = 0;
+        addChild(smoothieBarBack)
+        
+        let width:CGFloat = CGFloat (Float(currentSmoothie) / Float(MAX_SMOOTHIE)) * 150.0
+        box = CGRectMake(self.frame.width - 650, self.frame.height-40, width, 20)
+        
+        smoothieBar = SKShapeNode(rect: box)
+        smoothieBar.fillColor = Constants.Color.Smoothie
+        smoothieBar.lineWidth = 0;
+        addChild(smoothieBar)
     }
     
     func addMonster() {
@@ -156,7 +235,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let monster = SKSpriteNode(imageNamed: Constants.Image.Monster)
         
         // Determine where to spawn the monster along the Y axis
-        let actualY = random(min: monster.size.height/2, max: size.height - monster.size.height/2)
+        let actualY = random(min: monster.size.height/2, max: size.height - monster.size.height/2 - player.UI_BORDER)
         
         // Position the monster slightly off-screen along the right edge,
         // and along a random position along the Y axis as calculated above
@@ -182,69 +261,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             SKAction.removeFromParent()
         }
         monster.runAction(SKAction.sequence([actionMove, actionMoveDone]))
-    }
-    
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        // 1 - Choose one of the touches to work with
-        guard let touch = touches.first else {
-            return
-        }
-        touchLocation = touch.locationInNode(self)
-        
-        touched = true;
-    }
-    
-    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        guard let touch = touches.first else {
-            return
-        }
-        touchLocation = touch.locationInNode(self)
-    }
-    
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        touched = false;
-    }
-    
-    override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
-        touched = false;
-    }
-    
-    override func update(currentTime: NSTimeInterval) {
-        if(touched){
-            launchFruit(touchLocation);
-        }
-        
-        if(player.position.x <= 0){
-            //fixing edge collision to bounce off
-            let destination = CGPointMake(30, player.position.y)
-            let actionRecover = SKAction.moveTo(destination, duration: 0.25)
-            player.runAction(actionRecover)
-            player.physicsBody?.velocity = CGVectorMake(0, 0)
-            player.physicsBody?.angularVelocity = 0
-        }
-        
-        if(player.position.x > frame.width){
-            //fixing edge collision to bounce off
-            let destination = CGPointMake(frame.width-30, player.position.y)
-            let actionRecover = SKAction.moveTo(destination, duration: 0.25)
-            player.runAction(actionRecover)
-            player.physicsBody?.velocity = CGVectorMake(0, 0)
-            player.physicsBody?.angularVelocity = 0
-        }
-        
-        if(player.position.y < 0){
-            //fixing edge collision to bounce off
-            playerDied()
-        }
-        
-        if(player.position.y > frame.height){
-            //fixing edge collision to bounce off
-            let destination = CGPointMake(player.position.x, 30)
-            let actionRecover = SKAction.moveTo(destination, duration: 0.25)
-            player.runAction(actionRecover)
-            player.physicsBody?.velocity = CGVectorMake(0, 0)
-            player.physicsBody?.angularVelocity = 0
-        }
     }
     
     func launchFruit(touch: CGPoint) {
@@ -282,10 +298,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         // 10 - Fuel limit
-        fuel = fuel - 1
-        labelFuel.text = Constants.Label.fuel + "\(fuel) / \(MAX_FUEL)"
-        if(fuel <= 0){
-            print("NO MORE FUEL!!")
+        player.useFuel()
+        updateFuelLabel();
+        if (player.isOutOfFuel) {
             playerDied()
         }
         
@@ -294,11 +309,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         projectile.runAction(SKAction.sequence([actionStart, actionMove, actionMoveDone]))
         
         //SFX
-        runAction(SKAction.playSoundFileNamed(Constants.Sound.shooting, waitForCompletion: false))
+        playSound(shoot)
+    }
+    
+    func playSound(soundVariable : SKAction)
+    {
+        runAction(soundVariable)
     }
     
     func addForce(player:SKSpriteNode, direction:CGPoint) {
-        print("Move Player")
+        //print("Move Player")
         
         let shootAmount = direction * -50
         let maxSpeed:CGFloat = 0.5
@@ -307,57 +327,94 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player.physicsBody?.applyForce(thrustVector, atPoint: shootAmount)
     }
     
+    func changeSmoothie(){
+        updateSmoothieLabel()
+        
+        if(currentSmoothie >= MAX_SMOOTHIE) {
+            currentSmoothie = 0
+            player.madeSmoothie()
+            labelAdded.text = Constants.Label.collected + "\(player.smoothiesCollected)"
+        }
+        if(currentSmoothie == 0) {target.texture = SKTexture(imageNamed: Constants.Image.Smoothie0)}
+        if(currentSmoothie == 1) {target.texture = SKTexture(imageNamed: Constants.Image.Smoothie1)}
+        if(currentSmoothie == 2) {target.texture = SKTexture(imageNamed: Constants.Image.Smoothie2)}
+        if(currentSmoothie == 3) {target.texture = SKTexture(imageNamed: Constants.Image.Smoothie3)}
+        if(currentSmoothie == 4) {target.texture = SKTexture(imageNamed: Constants.Image.Smoothie4)}
+        if(currentSmoothie == 5) {target.texture = SKTexture(imageNamed: Constants.Image.Smoothie5)}
+    }
+    
     func playerDied(){
-        print("player died")
-        startPos = CGPoint(x: size.width * 0.1, y: size.height * 0.5)
+        //print("player died")
+        
+        player.resetPlayer(true)
         let actionDied = SKAction.moveTo(startPos, duration: 0.01)
         player.runAction(actionDied)
         
-        lives = lives - 1;
-        labelLives.text = Constants.Label.lives + "\(lives) / \(MAX_LIVES)"
-        if lives <= 0 {
+        if player.isDead {
             let reveal = SKTransition.flipHorizontalWithDuration(0.5)
-            let gameOverScene = GameOverScene(size: self.size, score: fruitCollected)
+            let gameOverScene = GameOverScene(size: self.size, score: player.smoothiesCollected)
             self.view?.presentScene(gameOverScene, transition: reveal)
         }
         
-        fuel = MAX_FUEL
-        labelFuel.text = Constants.Label.fuel + "\(fuel) / \(MAX_FUEL)"
-        player.physicsBody?.velocity = CGVectorMake(0, 0)
-        player.physicsBody?.angularVelocity = 0
+        labelLives.text = Constants.Label.lives + "\(player.lives) / \(player.MAX_LIVES)"
+        updateFuelLabel()
     }
+    
+    // MARK: - Methods - Touches -
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        // 1 - Choose one of the touches to work with
+        guard let touch = touches.first else {
+            return
+        }
+        touchLocation = touch.locationInNode(self)
+        
+        touched = true
+    }
+    
+    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        guard let touch = touches.first else {
+            return
+        }
+        touchLocation = touch.locationInNode(self)
+    }
+    
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        touched = false
+    }
+    
+    override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
+        touched = false
+    }
+
     
     // MARK: - Methods - Collision -
     
     func projectileDidCollideWithMonster(projectile:SKSpriteNode, monster:SKSpriteNode) {
-        print("Hit Monster")
+        //print("Hit Monster")
         projectile.removeFromParent()
         monster.removeFromParent()
         
-        monstersDestroyed++
-        fuel = fuel + 2;
-        labelFuel.text = Constants.Label.fuel + "\(fuel) / \(MAX_FUEL)"
-        labelKilled.text = Constants.Label.killed + "\(monstersDestroyed)"
+        player.killedMonster()
+        updateFuelLabel()
+        labelKilled.text = Constants.Label.killed + "\(player.monstersDestroyed)"
     }
     
     func monsterDidCollideWithPlayer(player:SKSpriteNode, monster:SKSpriteNode) {
-        print("Hit Player")
-        //monster.removeFromParent()
+        //print("Hit Player")
         playerDied()
     }
 
-    func playerDidCollideWithTarget(player:SKSpriteNode) {
-        print("Hit Target")
+    func playerDidCollideWithTarget(player:Player) {
+        //print("Hit Target")
         
-        fruitCollected++
-        labelAdded.text = Constants.Label.collected + "\(fruitCollected)"
-        startPos = CGPoint(x: size.width * 0.1, y: size.height * 0.5)
+        player.resetPlayer(false)
         let actionBlended = SKAction.moveTo(startPos, duration: 0.01)
         player.runAction(actionBlended)
-        fuel = MAX_FUEL
-        labelFuel.text = Constants.Label.fuel + "\(fuel) / \(MAX_FUEL)"
-        player.physicsBody?.velocity = CGVectorMake(0, 0)
-        player.physicsBody?.angularVelocity = 0
+        
+        currentSmoothie++
+        changeSmoothie()
+        
     }
     
     func didBeginContact(contact: SKPhysicsContact) {
@@ -390,13 +447,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //4
         else if ((firstBody.categoryBitMask & PhysicsCategory.Player != 0) &&
             (secondBody.categoryBitMask & PhysicsCategory.Target != 0)) {
-                playerDidCollideWithTarget(firstBody.node as! SKSpriteNode)
+                playerDidCollideWithTarget(firstBody.node as! Player)
         }
         
         //Collision between edge and player?
         else if((firstBody.categoryBitMask & PhysicsCategory.Border != 0) &&
             (secondBody.categoryBitMask & PhysicsCategory.Player != 0)) {
-                print("BORDER WORKS")
+                //print("BORDER WORKS")
         }
     }
 }

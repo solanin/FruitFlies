@@ -11,6 +11,14 @@ import SpriteKit
 import UIKit
 
 // MARK: - Methods -
+func random() -> CGFloat {
+    return CGFloat(Float(arc4random()) / 0xFFFFFFFF)
+}
+
+func random(min min: CGFloat, max: CGFloat) -> CGFloat {
+    return random() * (max - min) + min
+}
+
 func getScreenAspectRatioPortrait()->CGFloat{
     return UIScreen.mainScreen().bounds.width / UIScreen.mainScreen().bounds.height
 }
